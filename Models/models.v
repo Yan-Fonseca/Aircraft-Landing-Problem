@@ -1,6 +1,9 @@
 module models
 
 pub struct Plane {
+pub mut:
+	selected_time int
+pub:
 	id int
 	appearance_time int
 
