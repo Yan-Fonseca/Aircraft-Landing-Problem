@@ -1,6 +1,7 @@
 module models
 
 pub struct Plane {
+	pub mut:
 	id int
 	appearance_time int
 
@@ -16,6 +17,7 @@ pub struct Plane {
 
 
 pub struct Problem {
+	pub mut:
 	number_of_planes int
 	freeze_time int
 
