@@ -1,20 +1,6 @@
 module constructive
 import models
 
-struct Runway {
-pub mut:
-	planes []Plane
-pub:
-	max_number_of_planes int @[required]
-}
-
-pub struct Solution {
-pub mut:
-	runways []Runway
-pub:
-	number_of_runways int @[required]
-}
-
 fn verify_maxtime(planes []Plane) int {
 	mut maxTime := 0
 	for plane in planes {

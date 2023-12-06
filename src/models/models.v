@@ -15,11 +15,24 @@ pub struct Plane {
 	separation_time []int
 }
 
-
 pub struct Problem {
 	pub mut:
 	number_of_planes int
 	freeze_time int
 
 	planes []Plane
+}
+
+struct Runway {
+pub mut:
+	planes []Plane
+pub:
+	max_number_of_planes int @[required]
+}
+
+pub struct Solution {
+pub mut:
+	runways []Runway
+pub:
+	number_of_runways int @[required]
 }
