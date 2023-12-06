@@ -70,6 +70,8 @@ pub fn read_data(path string) Problem {
 			pointer += 1
 		}
 	}
-	print(planes)
+	//print(planes)
+	problem.planes = planes
+	print(problem)
 	return problem
 }
