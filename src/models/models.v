@@ -49,5 +49,6 @@ pub fn (u Problem) calculate_the_viability_for_landing_in_runway(last_plane_in_t
 	if time_distance_between_planes >= separation_time {
 		return 0
 	}
-	return time_distance_between_planes
+
+	return (last_plane_in_the_runway.selected_time + separation_time) - plane_in_air.target_landing_time
 }
