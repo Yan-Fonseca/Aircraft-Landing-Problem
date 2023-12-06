@@ -66,6 +66,7 @@ pub fn read_data(path string) Problem {
 		ct += 1
 		if ct == constraints_size + problem.number_of_planes {
 			ct = 0
+			planes[pointer].id = pointer
 			pointer += 1
 		}
 	}
