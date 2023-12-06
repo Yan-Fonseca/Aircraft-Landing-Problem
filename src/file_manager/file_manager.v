@@ -14,7 +14,7 @@ fn find_sizes(str []string) ([]int, int) {
 		else {
 			jumps += 1
 		}
-		if(index == 2) {
+		if index == 2 {
 			return sizes, jumps
 		}
 	}
@@ -72,6 +72,6 @@ pub fn read_data(path string) Problem {
 	}
 	//print(planes)
 	problem.planes = planes
-	print(problem)
+	//print(problem)
 	return problem
 }

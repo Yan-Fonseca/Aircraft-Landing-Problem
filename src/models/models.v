@@ -23,7 +23,7 @@ pub struct Problem {
 	planes []Plane
 }
 
-struct Runway {
+pub struct Runway {
 pub mut:
 	planes []Plane
 pub:
