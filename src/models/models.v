@@ -35,7 +35,7 @@ pub:
 pub struct Solution {
 pub mut:
 	runways []Runway
-	global_cost f32
+	global_cost f64
 pub:
 	number_of_runways int @[required]
 }
@@ -51,4 +51,30 @@ pub fn (u Problem) calculate_the_viability_for_landing_in_runway(last_plane_in_t
 	}
 
 	return (last_plane_in_the_runway.selected_time + separation_time) - plane_in_air.target_landing_time
+}
+
+pub fn (mut u Solution) value_of_solution() {
+	mut value := 0.0
+
+	for runway in u.runways {
+		for plane in runway.planes {
+			if plane.selected_time < plane.target_landing_time {
+				value += (plane.target_landing_time - plane.selected_time) * plane.penalty_for_landing_before_target
+			}
+			else if plane.selected_time > plane.target_landing_time {
+				value += (plane.selected_time - plane.target_landing_time) * plane.penalty_for_landing_after_target
+			}
+		}
+	}
+
+	u.global_cost = value
+}
+
+pub fn (mut u Solution) validate_solution() {
+	for runway in u.runways {
+		for plane in runway.planes {
+			print("id:" + plane.id.str() + " - Target time: " + plane.target_landing_time.str() + " - selected: " + plane.selected_time.str() + "\n")
+		}
+		print("======================================\n")
+	}
 }

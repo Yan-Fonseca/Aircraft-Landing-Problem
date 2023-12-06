@@ -6,6 +6,10 @@ import models {Solution}
 fn main() {
 	problem := read_data("/home/yan/inteligencia_computacional/ALP/instances/airland1.txt")
 	
-	solution := constructive(problem,2)
-	
+	mut solution := constructive(problem,2)
+	solution.value_of_solution()
+	print(solution.global_cost.str() + "\n")
+
+	print("---------------------\n")
+	solution.validate_solution()
 }
