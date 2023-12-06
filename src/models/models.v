@@ -36,3 +36,11 @@ pub mut:
 pub:
 	number_of_runways int @[required]
 }
+
+// Métodos
+
+pub fn (u Problem) calculate_the_viability_for_landing_in_runway(last_plane_to_land_in_the_runway Plane, plane_in_air Plane) int {
+	time_distance_between_planes := plane_in_air.target_landing_time - last_plane_to_land_in_the_runway.target_landing_time
+	separation_time := last_plane_to_land_in_the_runway.separation_time[plane_in_air.id]
+	return time_distance_between_planes - separation_time
+}
