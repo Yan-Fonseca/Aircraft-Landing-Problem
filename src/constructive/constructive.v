@@ -28,13 +28,14 @@ pub fn constructive(problem Problem, number_of_runways int) Solution {
 			}
 		}
 
+		aux_pos = 9999
 		for i := 0; i < number_of_runways; i++ {
 			if viability_values[i] == 0 {
 				aux_pos = 0
 				index = i
 				break
 			}
-			else if viability_values[i] > 0 && viability_values[i] < aux_pos {
+			else if viability_values[i] > 0 && aux_pos > viability_values[i] {
 				aux_pos = viability_values[i]
 				index = i
 			} 
@@ -42,7 +43,13 @@ pub fn constructive(problem Problem, number_of_runways int) Solution {
 
 		runways[index].planes.prepend(planes_queue.pop())
 		counter -= counter
-		runways[index].planes[0].selected_time = runways[index].planes[0].target_landing_time + aux_pos
+		if runways[index].planes.len == 1 {
+			runways[index].planes[0].selected_time = runways[index].planes[0].target_landing_time
+		}
+		else {
+			runways[index].planes[0].selected_time = runways[index].planes[0].target_landing_time + aux_pos
+		}
+		
 	}
 
 
