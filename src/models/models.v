@@ -46,7 +46,7 @@ pub fn (u Problem) calculate_the_viability_for_landing_in_runway(last_plane_in_t
 	time_distance_between_planes := plane_in_air.target_landing_time - last_plane_in_the_runway.selected_time
 	separation_time := last_plane_in_the_runway.separation_time[plane_in_air.id]
 	
-	print("\n-----------------\n time distance: " + time_distance_between_planes.str() + " | sepration time: " + separation_time.str())
+	// print("\n-----------------\n time distance: " + time_distance_between_planes.str() + " | separation time: " + separation_time.str())
 
 	if time_distance_between_planes >= separation_time {
 		return 0
@@ -76,7 +76,7 @@ pub fn (mut u Solution) validate_solution() {
 	for runway in u.runways {
 		for plane in runway.planes {
 			if plane.selected_time < plane.earliest_landing_time || plane.selected_time > plane.latest_landing_time {
-				print("[ERROR] Avião " + plane.id.str() + " fora da janela de tempo")
+				print("[ERROR] Avião " + plane.id.str() + " fora da janela de tempo\n")
 				return
 			}
 		}

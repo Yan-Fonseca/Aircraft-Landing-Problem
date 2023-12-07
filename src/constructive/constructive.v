@@ -10,6 +10,12 @@ pub fn constructive(problem Problem, number_of_runways int) Solution {
 	mut planes_queue := problem.planes.clone()
 	planes_queue.sort(a.target_landing_time > b.target_landing_time) // Ordenando a fila de aviões em voo pelo tempo alvo
 
+	// print("Fila: ")
+	// for plane in planes_queue {
+	// 	print(plane.id.str() + " - ")
+	// }
+	// print("\n===============================\n")
+
 	runways[0].planes.prepend(planes_queue.pop()) // adicionando o primeiro avião da fila na pista 1
 	runways[0].planes[0].selected_time = runways[0].planes[0].target_landing_time
 
@@ -17,7 +23,7 @@ pub fn constructive(problem Problem, number_of_runways int) Solution {
 	mut index := 0
 	mut aux_pos := 9999
 
-	for counter := 0; counter < planes_queue.len; counter++ {
+	for planes_queue.len != 0 {
 
 		for runway := 0; runway < number_of_runways; runway++ {
 			if runways[runway].planes.len > 0 {
@@ -27,6 +33,10 @@ pub fn constructive(problem Problem, number_of_runways int) Solution {
 				viability_values[runway] = 0
 			}
 		}
+
+		// print("---------------------------------\n")
+		// print("Avião na fila: " + planes_queue.last().id.str() + "\n")
+		// print(viability_values)
 
 		aux_pos = 9999
 		for i := 0; i < number_of_runways; i++ {
@@ -42,7 +52,6 @@ pub fn constructive(problem Problem, number_of_runways int) Solution {
 		}
 
 		runways[index].planes.prepend(planes_queue.pop())
-		counter -= counter
 		if runways[index].planes.len == 1 {
 			runways[index].planes[0].selected_time = runways[index].planes[0].target_landing_time
 		}
@@ -50,17 +59,22 @@ pub fn constructive(problem Problem, number_of_runways int) Solution {
 			runways[index].planes[0].selected_time = runways[index].planes[0].target_landing_time + aux_pos
 		}
 		
+		// print("\npista escolhida: " + index.str() + "\n")
 	}
 
 
 	solution.runways = runways
-	print("\n")
+	print("\n=================================\n Pistas \n=================================\n")
 	for i in solution.runways {
 		for j in i.planes {
 			print(j.id.str() + " - ")
 		}
 		print("\n")
 	}
+
+	print("\n=================================\n Fila de aviões deve estar vazia! \n=================================\n")
+	print(planes_queue)
+	print("\n")
 
 	return solution
 }
