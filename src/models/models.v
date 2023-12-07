@@ -75,8 +75,10 @@ pub fn (mut u Solution) value_of_solution() {
 pub fn (mut u Solution) validate_solution() {
 	for runway in u.runways {
 		for plane in runway.planes {
-			print("id:" + plane.id.str() + " - Target time: " + plane.target_landing_time.str() + " - selected: " + plane.selected_time.str() + "\n")
+			if plane.selected_time < plane.earliest_landing_time || plane.selected_time > plane.latest_landing_time {
+				print("[ERROR] Avião " + plane.id.str() + " fora da janela de tempo")
+				return
+			}
 		}
-		print("======================================\n")
 	}
 }
