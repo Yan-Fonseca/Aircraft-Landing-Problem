@@ -1,6 +1,7 @@
 module file_manager
 import os
 import models {Problem, Plane}
+import strconv
 
 fn find_sizes(str []string) ([]int, int) {
 	mut index := 0
@@ -39,9 +40,15 @@ pub fn read_data(path string) Problem {
 		planes[j].separation_time = []int{len: sizes[0]}
 	}
 	for i := 0 + jumps + 2; i < str.len; i += 1 {
-		if str[i].int() == 0 {
+
+		
+		mut f := strconv.atoi(str[i]) or {-1}
+		mut r := strconv.atof64(str[i]) or {-1}
+
+		if f == -1 && r == -1 {
 			continue
-		}	
+		}
+
 		if ct == 0 {
 			planes[pointer].appearance_time = str[i].int()
 		}

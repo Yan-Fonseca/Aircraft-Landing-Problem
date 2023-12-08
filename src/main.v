@@ -3,7 +3,7 @@ import file_manager {read_data}
 import constructive {constructive, generate_initial_population}
 
 fn main() {
-	problem := read_data("/home/yan/inteligencia_computacional/ALP/instances/airland1.txt")
+	problem := read_data("/home/iamthemage/Documentos/Aircraft-Landing-Problem/instances/airland1.txt")
 	
 	mut solution := generate_initial_population(problem, 2, 5)
 	//mut solution := constructive(problem,2)
