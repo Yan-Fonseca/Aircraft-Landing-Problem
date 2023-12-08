@@ -1,7 +1,22 @@
 module constructive
 import models {Plane,Solution,Problem,Runway}
+import rand
 
+pub fn generate_initial_population(problem Problem, number_of_runways int, population_size int) /*[]Solution*/ {
+	//mut solution := Solution{number_of_runways : number_of_runways}
+	//mut population := []Solution{len : population_size}
+	percentage := 0.3
 
+	mut runways := []Runway{len : number_of_runways} // vetor de pistas vazio (destinado a mostrar os aviões agendados)
+
+	mut planes_queue := problem.planes.clone()
+	planes_queue.sort(a.target_landing_time > b.target_landing_time) // Ordenando a fila de aviões em voo pelo tempo alvo
+
+	mut random_number_plane := rand.u32() % u32(percentage * f32(planes_queue.len))
+
+	runways[(rand.u32() % number_of_runways)].planes.prepend(planes_queue[planes_queue.len - 1 - random_number_plane])
+	print(runways)
+}
 
 pub fn constructive(problem Problem, number_of_runways int) Solution {
 	mut solution := Solution{number_of_runways : number_of_runways} // Solução inicial vazia
