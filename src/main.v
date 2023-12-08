@@ -3,7 +3,7 @@ import file_manager {read_data}
 import constructive {constructive}
 
 fn main() {
-	problem := read_data("/home/yan/inteligencia_computacional/ALP/instances/airland1.txt")
+	problem := read_data("/home/iamthemage/Documentos/Aircraft-Landing-Problem/instances/airland1.txt")
 	
 	mut solution := constructive(problem,2)
 	solution.value_of_solution()
