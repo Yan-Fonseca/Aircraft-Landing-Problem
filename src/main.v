@@ -5,7 +5,7 @@ import constructive {constructive, generate_initial_population}
 fn main() {
 	problem := read_data("/home/yan/inteligencia_computacional/ALP/instances/airland1.txt")
 	
-	/*mut solution := */generate_initial_population(problem, 2, 5)
+	mut solution := generate_initial_population(problem, 2, 5)
 	//mut solution := constructive(problem,2)
 	//solution.value_of_solution()
 	//print("Valor da solução atual: " + solution.global_cost.str() + "\n")

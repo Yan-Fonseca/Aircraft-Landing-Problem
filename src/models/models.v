@@ -37,7 +37,7 @@ pub mut:
 	runways []Runway
 	global_cost f64
 pub:
-	number_of_runways int @[required]
+	number_of_runways int
 }
 
 // Métodos
