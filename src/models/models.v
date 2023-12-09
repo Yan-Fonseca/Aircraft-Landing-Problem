@@ -1,4 +1,5 @@
 module models
+import rand
 
 pub struct Plane {
 	pub mut:
@@ -91,8 +92,11 @@ pub fn (mut u Solution) validate_solution() bool {
 // [2] Movimentos
 // [2.1] métodos auxiliares para os movimentos
 
-fn (mut u Solution) is_id_of_plane_valid(id_plane int) bool {
-	if id_plane< 0 || id_plane >= u.number_of_planes {
+fn (mut u Solution) is_id_of_plane_valid(id_plane int, id_runway int) bool {
+	if !(u.is_id_of_runway_valid(id_runway)) {
+		return false
+	}
+	else if id_plane< 0 || id_plane >= u.runways[id_runway].planes.len {
 		return false
 	}
 	return true
@@ -105,19 +109,20 @@ fn (mut u Solution) is_id_of_runway_valid(id_runway int) bool {
 	return true
 }
 
-fn (mut u Solution) is_ids_of_planes_valid(id_plane_A int, id_plane_B int) bool {
-	return u.is_id_of_plane_valid(id_plane_A) && u.is_id_of_plane_valid(id_plane_B)
+fn (mut u Solution) is_ids_of_planes_valid(id_plane_A int, id_plane_B int, id_runway_A int, id_runway_B int) bool {
+	return u.is_id_of_plane_valid(id_plane_A, id_runway_A) && u.is_id_of_plane_valid(id_plane_B, id_runway_B)
 }
 
 fn (mut u Solution) is_ids_of_runways_valid(id_runway_A int, id_runway_B int) bool {
 	return u.is_id_of_runway_valid(id_runway_A) && u.is_id_of_runway_valid(id_runway_B)
 }
 
+
 // [2.2] Implementação dos movimentos
 
 
 pub fn (mut u Solution) swap_planes_between_runways(id_plane_A int, id_runway_A int, id_plane_B int, id_runway_B int) {
-	if u.is_ids_of_planes_valid(id_plane_A,id_plane_B) && u.is_ids_of_runways_valid(id_runway_A,id_plane_B) {
+	if u.is_ids_of_planes_valid(id_plane_A,id_plane_B,id_runway_A,id_runway_B) && u.is_ids_of_runways_valid(id_runway_A,id_plane_B) {
 		plane := u.runways[id_runway_A].planes[id_plane_A]
 		u.runways[id_runway_A].planes[id_plane_A] = u.runways[id_runway_B].planes[id_plane_B]
 		u.runways[id_runway_B].planes[id_plane_B] = plane
@@ -126,4 +131,13 @@ pub fn (mut u Solution) swap_planes_between_runways(id_plane_A int, id_runway_A 
 
 pub fn (mut u Solution) permute_airplanes(id_plane_A int, id_plane_B int, id_runway int) {
 	u.swap_planes_between_runways(id_plane_A, id_runway, id_plane_B, id_runway)
+}
+
+pub fn (mut u Solution) random_reinsertion_in_runway(id_plane int, id_runway int) {
+	if u.is_id_of_plane_valid(id_plane, id_runway) {
+		plane := u.runways[id_runway].planes[id_plane]
+		u.runways[id_runway].planes.delete(id_plane)
+		index := rand.u32() % u.runways[id_runway].planes.len
+		u.runways[id_runway].planes.insert(index,plane)
+	}
 }
