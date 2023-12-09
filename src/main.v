@@ -5,12 +5,17 @@ import constructive {constructive, generate_initial_population}
 fn main() {
 	problem := read_data("/home/yan/inteligencia_computacional/ALP/instances/airland1.txt")
 	
-	mut solution := generate_initial_population(problem, 2, 5)
-	print(solution)
-	//mut solution := constructive(problem,2)
-	//solution.value_of_solution()
-	//print("Valor da solução atual: " + solution.global_cost.str() + "\n")
+	// mut solution := generate_initial_population(problem, 2, 5)
+	mut solution := constructive(problem,2)
+	solution.value_of_solution()
+	print("Valor da solução atual: " + solution.global_cost.str() + "\n")
 
-	//print("---------------------\n")
-	//solution.validate_solution()
+	print("---------------------\n")
+	print(solution)
+	print("\n\n")
+	solution.swap_planes_between_runways(1,0,0,1)
+	print("\n\n---------------------\n")
+	print(solution)
+	print("\n\n")
+	solution.validate_solution()
 }

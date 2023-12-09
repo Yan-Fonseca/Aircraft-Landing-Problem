@@ -38,9 +38,10 @@ pub mut:
 	global_cost f64
 pub:
 	number_of_runways int
+	number_of_planes int
 }
 
-// Métodos
+// [1] Métodos das structs
 
 pub fn (u Problem) calculate_the_viability_for_landing_in_runway(last_plane_in_the_runway Plane, plane_in_air Plane) int {
 	time_distance_between_planes := plane_in_air.target_landing_time - last_plane_in_the_runway.selected_time
@@ -75,13 +76,51 @@ pub fn (mut u Solution) value_of_solution() {
 	u.global_cost = value
 }
 
-pub fn (mut u Solution) validate_solution() {
+pub fn (mut u Solution) validate_solution() bool {
 	for runway in u.runways {
 		for plane in runway.planes {
 			if plane.selected_time < plane.earliest_landing_time || plane.selected_time > plane.latest_landing_time {
 				print("[ERROR] Avião " + plane.id.str() + " fora da janela de tempo\n")
-				return
+				return false
 			}
 		}
 	}
+	return true
 }
+
+// [2] Movimentos
+// [2.1] métodos auxiliares para os movimentos
+
+fn (mut u Solution) is_id_of_plane_valid(id_plane int) bool {
+	if id_plane< 0 || id_plane >= u.number_of_planes {
+		return false
+	}
+	return true
+}
+
+fn (mut u Solution) is_id_of_runway_valid(id_runway int) bool {
+	if id_runway < 0 || id_runway >= u.number_of_runways {
+		return false
+	}
+	return true
+}
+
+fn (mut u Solution) is_ids_of_planes_valid(id_plane_A int, id_plane_B int) bool {
+	return u.is_id_of_plane_valid(id_plane_A) && u.is_id_of_plane_valid(id_plane_B)
+}
+
+fn (mut u Solution) is_ids_of_runways_valid(id_runway_A int, id_runway_B int) bool {
+	return u.is_id_of_runway_valid(id_runway_A) && u.is_id_of_runway_valid(id_runway_B)
+}
+
+// [2.2] Implementação dos movimentos
+
+
+pub fn (mut u Solution) swap_planes_between_runways(id_plane_A int, id_runway_A int, id_plane_B int, id_runway_B int) {
+	if u.is_ids_of_planes_valid(id_plane_A,id_plane_B) && u.is_ids_of_runways_valid(id_runway_A,id_plane_B) {
+		plane := u.runways[id_runway_A].planes[id_plane_A]
+		u.runways[id_runway_A].planes[id_plane_A] = u.runways[id_runway_B].planes[id_plane_B]
+		u.runways[id_runway_B].planes[id_plane_B] = plane
+	}
+}
+

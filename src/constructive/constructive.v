@@ -67,7 +67,10 @@ fn generate_solution(mut planes_queue_original []Plane, percentage f64, number_o
 }
 
 pub fn generate_initial_population(problem Problem, number_of_runways int, population_size int) []Solution {
-	mut solution := Solution{number_of_runways : number_of_runways}
+	mut solution := Solution{
+		number_of_runways : number_of_runways
+		number_of_planes : problem.number_of_planes
+	}
 	mut population := []Solution{}
 	percentage := 0.2
 	
@@ -89,7 +92,10 @@ pub fn generate_initial_population(problem Problem, number_of_runways int, popul
 
 
 pub fn constructive(problem Problem, number_of_runways int) Solution {
-	mut solution := Solution{number_of_runways : number_of_runways} // Solução inicial vazia
+	mut solution := Solution{
+		number_of_runways : number_of_runways
+		number_of_planes : problem.number_of_planes
+	} // Solução inicial vazia
 	mut runways := []Runway{len : number_of_runways} // vetor de pistas vazio (destinado a mostrar os aviões agendados)
 
 	mut planes_queue := problem.planes.clone()
