@@ -124,3 +124,6 @@ pub fn (mut u Solution) swap_planes_between_runways(id_plane_A int, id_runway_A 
 	}
 }
 
+pub fn (mut u Solution) permute_airplanes(id_plane_A int, id_plane_B int, id_runway int) {
+	u.swap_planes_between_runways(id_plane_A, id_runway, id_plane_B, id_runway)
+}
