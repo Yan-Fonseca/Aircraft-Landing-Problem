@@ -91,6 +91,13 @@ pub fn (mut u Solution) validate_solution() bool {
 
 // [2] Movimentos
 
+fn calculate_random_index(number u32, length int) int {
+	if length == 0 {
+		return 0
+	}
+	return number % length
+}
+
 fn (mut u Solution) recalculate_plane_times() {
 	mut dt := 0
 	for mut runway in u.runways {
@@ -172,8 +179,8 @@ pub fn (mut u Solution) random_runway_swap(id_plane int, id_runway int) {
 	if u.is_id_of_plane_valid(id_plane,id_runway) {
 		plane := u.runways[id_runway].planes[id_plane]
 		u.runways[id_runway].planes.delete(id_plane)
-		index_runway := rand.u32() % u.runways.len
-		index_plane := rand.u32() % u.runways[index_runway].planes.len
+		index_runway := calculate_random_index(rand.u32(),u.runways.len)
+		index_plane := calculate_random_index(rand.u32(),u.runways[index_runway].planes.len)
 		u.runways[index_runway].planes.insert(index_plane,plane)
 		u.recalculate_plane_times()
 		u.validate_solution()
@@ -187,6 +194,21 @@ pub fn (mut u Solution) partial_inversion(id_runway int, left int, right int) {
 		u.runways[id_runway].planes.delete_many(left, right - left)
 		plane_interval = plane_interval.reverse()
 		u.runways[id_runway].planes.insert(left, plane_interval)
+		u.recalculate_plane_times()
+		u.validate_solution()
+		u.value_of_solution()
+	}
+}
+
+
+pub fn (mut u Solution) partial_inversion_and_random_runway(id_runway int, left int, right int) {
+	if u.is_interval_valid(id_runway,left,right) {
+		mut plane_interval := u.runways[id_runway].planes[left..right]
+		u.runways[id_runway].planes.delete_many(left, right - left)
+		plane_interval = plane_interval.reverse()
+		index_runway := calculate_random_index(rand.u32(), u.runways.len)
+		index_plane := calculate_random_index(rand.u32(),u.runways[index_runway].planes.len)
+		u.runways[index_runway].planes.insert(index_plane, plane_interval)
 		u.recalculate_plane_times()
 		u.validate_solution()
 		u.value_of_solution()
