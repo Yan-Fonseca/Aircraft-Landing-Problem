@@ -13,7 +13,7 @@ fn main() {
 	print("---------------------\n")
 	print(solution)
 	print("\n\n")
-	solution.partial_inversion_and_random_runway(0,0,4)
+	solution.group_swap(0,1,0,0,0)
 	print("\n\n---------------------\n")
 	print(solution)
 	print("\n\n")
