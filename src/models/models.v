@@ -44,7 +44,7 @@ pub:
 
 // [1] Métodos das structs
 
-pub fn (u Problem) calculate_the_viability_for_landing_in_runway(last_plane_in_the_runway Plane, plane_in_air Plane) int {
+pub fn calculate_the_viability_for_landing_in_runway(last_plane_in_the_runway Plane, plane_in_air Plane) int {
 	time_distance_between_planes := plane_in_air.target_landing_time - last_plane_in_the_runway.selected_time
 	separation_time := last_plane_in_the_runway.separation_time[plane_in_air.id]
 	
@@ -90,6 +90,17 @@ pub fn (mut u Solution) validate_solution() bool {
 }
 
 // [2] Movimentos
+
+fn (mut u Solution) recalculate_plane_times() {
+	mut dt := 0
+	for mut runway in u.runways {
+		for index_plane := 1; index_plane < runway.planes.len; index_plane++ {
+			dt = calculate_the_viability_for_landing_in_runway(runway.planes[index_plane - 1], runway.planes[index_plane])
+			runway.planes[index_plane].selected_time = runway.planes[index_plane].target_landing_time + dt
+		}
+	}
+}
+
 // [2.1] métodos auxiliares para os movimentos
 
 fn (mut u Solution) is_id_of_plane_valid(id_plane int, id_runway int) bool {
@@ -126,6 +137,9 @@ pub fn (mut u Solution) swap_planes_between_runways(id_plane_A int, id_runway_A 
 		plane := u.runways[id_runway_A].planes[id_plane_A]
 		u.runways[id_runway_A].planes[id_plane_A] = u.runways[id_runway_B].planes[id_plane_B]
 		u.runways[id_runway_B].planes[id_plane_B] = plane
+		u.recalculate_plane_times()
+		u.validate_solution()
+		u.value_of_solution()
 	}
 }
 
@@ -139,5 +153,8 @@ pub fn (mut u Solution) random_reinsertion_in_runway(id_plane int, id_runway int
 		u.runways[id_runway].planes.delete(id_plane)
 		index := rand.u32() % u.runways[id_runway].planes.len
 		u.runways[id_runway].planes.insert(index,plane)
+		u.recalculate_plane_times()
+		u.validate_solution()
+		u.value_of_solution()
 	}
 }

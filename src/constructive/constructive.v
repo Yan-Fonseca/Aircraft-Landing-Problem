@@ -1,5 +1,5 @@
 module constructive
-import models {Plane,Solution,Problem,Runway}
+import models {Plane,Solution,Problem,Runway,calculate_the_viability_for_landing_in_runway}
 import rand
 
 fn calculate_value_of_index_plane(x int, y int) int {
@@ -33,7 +33,7 @@ fn generate_solution(mut planes_queue_original []Plane, percentage f64, number_o
 		index_plane = planes_queue.len - 1 - random_number_plane
 		for runway := 0; runway < number_of_runways; runway++ {
 			if runways[runway].planes.len > 0 {
-				viability_values[runway] = problem.calculate_the_viability_for_landing_in_runway(runways[runway].planes[0],planes_queue[index_plane])
+				viability_values[runway] = calculate_the_viability_for_landing_in_runway(runways[runway].planes[0],planes_queue[index_plane])
 			}
 			else {
 				viability_values[runway] = 0
@@ -118,7 +118,7 @@ pub fn constructive(problem Problem, number_of_runways int) Solution {
 
 		for runway := 0; runway < number_of_runways; runway++ {
 			if runways[runway].planes.len > 0 {
-				viability_values[runway] = problem.calculate_the_viability_for_landing_in_runway(runways[runway].planes[0],planes_queue.last())
+				viability_values[runway] = calculate_the_viability_for_landing_in_runway(runways[runway].planes[0],planes_queue.last())
 			}
 			else {
 				viability_values[runway] = 0
