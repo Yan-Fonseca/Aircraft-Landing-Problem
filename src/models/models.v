@@ -280,3 +280,19 @@ pub fn (mut p Solution) group_swap(id_runway_1 int, id_runway_2 int, left_1 int,
 	}
 	return u, true
 }
+
+pub fn (mut p Solution) decrease_landing_time_of_runway(id_runway int, size int) (Solution,bool) {
+	mut u := copy_solution(p)
+	if u.is_id_of_runway_valid(id_runway) && size>=0 {
+		for i := 0; i < u.runways[id_runway].planes.len; i++ {
+			u.runways[id_runway].planes[i].selected_time -= size
+		}
+
+		is_valid := u.validate_solution()
+		u.value_of_solution()
+
+		return u,is_valid
+	}
+
+	return u, true
+}

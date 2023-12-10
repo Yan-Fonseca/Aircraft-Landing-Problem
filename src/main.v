@@ -13,7 +13,7 @@ fn main() {
 	print("---------------------\n")
 	print(solution)
 	print("\n\n")
-	mut solution2,is_valid := solution.group_swap(0,1,0,0,1)
+	mut solution2,is_valid := solution.decrease_landing_time_of_runway(0,10)
 	print("\n\n---------------------\n")
 	print(solution2)
 	print("\n\n")
