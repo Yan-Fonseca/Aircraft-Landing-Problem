@@ -94,8 +94,8 @@ pub fn (mut u Solution) validate_solution() bool {
 fn (mut u Solution) recalculate_plane_times() {
 	mut dt := 0
 	for mut runway in u.runways {
-		for index_plane := 1; index_plane < runway.planes.len; index_plane++ {
-			dt = calculate_the_viability_for_landing_in_runway(runway.planes[index_plane - 1], runway.planes[index_plane])
+		for index_plane := runway.planes.len - 2; index_plane > 0; index_plane-- {
+			dt = calculate_the_viability_for_landing_in_runway(runway.planes[index_plane], runway.planes[index_plane - 1])
 			runway.planes[index_plane].selected_time = runway.planes[index_plane].target_landing_time + dt
 		}
 	}
@@ -153,6 +153,19 @@ pub fn (mut u Solution) random_reinsertion_in_runway(id_plane int, id_runway int
 		u.runways[id_runway].planes.delete(id_plane)
 		index := rand.u32() % u.runways[id_runway].planes.len
 		u.runways[id_runway].planes.insert(index,plane)
+		u.recalculate_plane_times()
+		u.validate_solution()
+		u.value_of_solution()
+	}
+}
+
+pub fn (mut u Solution) random_runway_swap(id_plane int, id_runway int) {
+	if u.is_id_of_plane_valid(id_plane,id_runway) {
+		plane := u.runways[id_runway].planes[id_plane]
+		u.runways[id_runway].planes.delete(id_plane)
+		index_runway := rand.u32() % u.runways.len
+		index_plane := rand.u32() % u.runways[index_runway].planes.len
+		u.runways[index_runway].planes.insert(index_plane,plane)
 		u.recalculate_plane_times()
 		u.validate_solution()
 		u.value_of_solution()

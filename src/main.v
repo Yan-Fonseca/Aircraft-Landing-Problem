@@ -13,7 +13,7 @@ fn main() {
 	print("---------------------\n")
 	print(solution)
 	print("\n\n")
-	solution.random_reinsertion_in_runway(0,0)
+	solution.random_runway_swap(0,1)
 	print("\n\n---------------------\n")
 	print(solution)
 	print("\n\n")
