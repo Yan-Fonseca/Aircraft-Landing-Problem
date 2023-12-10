@@ -128,6 +128,15 @@ fn (mut u Solution) is_ids_of_runways_valid(id_runway_A int, id_runway_B int) bo
 	return u.is_id_of_runway_valid(id_runway_A) && u.is_id_of_runway_valid(id_runway_B)
 }
 
+fn (mut u Solution) is_interval_valid(id_runway int, left int, right int) bool {
+	if u.is_id_of_runway_valid(id_runway) {
+		if left >= 0 || right <= u.runways[id_runway].planes.len	{
+			return true
+		}
+	}
+	return false
+}
+
 
 // [2.2] Implementação dos movimentos
 
@@ -166,6 +175,18 @@ pub fn (mut u Solution) random_runway_swap(id_plane int, id_runway int) {
 		index_runway := rand.u32() % u.runways.len
 		index_plane := rand.u32() % u.runways[index_runway].planes.len
 		u.runways[index_runway].planes.insert(index_plane,plane)
+		u.recalculate_plane_times()
+		u.validate_solution()
+		u.value_of_solution()
+	}
+}
+
+pub fn (mut u Solution) partial_inversion(id_runway int, left int, right int) {
+	if u.is_interval_valid(id_runway,left,right) {
+		mut plane_interval := u.runways[id_runway].planes[left..right]
+		u.runways[id_runway].planes.delete_many(left, right - left)
+		plane_interval = plane_interval.reverse()
+		u.runways[id_runway].planes.insert(left, plane_interval)
 		u.recalculate_plane_times()
 		u.validate_solution()
 		u.value_of_solution()
