@@ -167,7 +167,7 @@ pub fn (mut u Solution) random_reinsertion_in_runway(id_plane int, id_runway int
 	if u.is_id_of_plane_valid(id_plane, id_runway) {
 		plane := u.runways[id_runway].planes[id_plane]
 		u.runways[id_runway].planes.delete(id_plane)
-		index := rand.u32() % u.runways[id_runway].planes.len
+		index := calculate_random_index(rand.u32(),u.runways[id_runway].planes.len)
 		u.runways[id_runway].planes.insert(index,plane)
 		u.recalculate_plane_times()
 		u.validate_solution()
@@ -214,3 +214,4 @@ pub fn (mut u Solution) partial_inversion_and_random_runway(id_runway int, left 
 		u.value_of_solution()
 	}
 }
+
