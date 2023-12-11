@@ -78,25 +78,50 @@ pub fn (mut u Solution) value_of_solution() {
 }
 
 pub fn (mut u Solution) validate_solution() bool {
+	mut solution_valid := true
 	for runway in u.runways {
 		for plane in runway.planes {
-			if plane.selected_time < plane.earliest_landing_time || plane.selected_time > plane.latest_landing_time {
-				print("[ERROR] Avião " + plane.id.str() + " fora da janela de tempo\n")
-				return false
+			if plane.selected_time < plane.earliest_landing_time {
+				//print("[ERROR] Avião " + plane.id.str() + " fora da janela de tempo\n")
+				solution_valid = false
 			}
 		}
 	}
-	return true
+	return solution_valid
+}
+
+pub fn copy_solution(u Solution) Solution {
+	mut p := Solution{
+		number_of_runways : u.number_of_runways
+		number_of_planes : u.number_of_planes
+		global_cost : u.global_cost
+	}
+
+	mut runway := Runway{max_number_of_planes : u.number_of_planes}
+
+	for i:= u.number_of_runways-1; i>=0; i-- {
+		runway = Runway{max_number_of_planes : u.number_of_planes}
+		runway.planes = u.runways[i].planes.clone()
+		p.runways.prepend(runway)
+	}
+	return p
 }
 
 // [2] Movimentos
 
+fn calculate_random_index(number u32, length int) int {
+	if length == 0 {
+		return 0
+	}
+	return number % length
+}
+
 fn (mut u Solution) recalculate_plane_times() {
 	mut dt := 0
 	for mut runway in u.runways {
-		for index_plane := runway.planes.len - 2; index_plane > 0; index_plane-- {
+		for index_plane := runway.planes.len - 1; index_plane > 0; index_plane-- {
 			dt = calculate_the_viability_for_landing_in_runway(runway.planes[index_plane], runway.planes[index_plane - 1])
-			runway.planes[index_plane].selected_time = runway.planes[index_plane].target_landing_time + dt
+			runway.planes[index_plane-1].selected_time = runway.planes[index_plane-1].target_landing_time + dt
 		}
 	}
 }
@@ -128,46 +153,78 @@ fn (mut u Solution) is_ids_of_runways_valid(id_runway_A int, id_runway_B int) bo
 	return u.is_id_of_runway_valid(id_runway_A) && u.is_id_of_runway_valid(id_runway_B)
 }
 
+fn (mut u Solution) is_interval_valid(id_runway int, left int, right int) bool {
+	if u.is_id_of_runway_valid(id_runway) {
+		if left >= 0 && right <= u.runways[id_runway].planes.len && left <= right{
+			return true
+		}
+	}
+	return false
+}
+
+fn (mut u Solution) is_group_valid(id_runway int, left int, size int) bool {
+	if left >= 0 && (left + size) < u.runways[id_runway].planes.len {
+		return true
+	}
+	return false
+}
+
+fn (mut u Solution) is_groups_valids(id_runway_1 int, id_runway_2 int, left_1 int, left_2 int, size int) bool {
+	return u.is_group_valid(id_runway_1, left_1, size) && u.is_group_valid(id_runway_2, left_2, size)
+}
 
 // [2.2] Implementação dos movimentos
 
 
-pub fn (mut u Solution) swap_planes_between_runways(id_plane_A int, id_runway_A int, id_plane_B int, id_runway_B int) {
+pub fn (mut p Solution) swap_planes_between_runways(id_plane_A int, id_runway_A int, id_plane_B int, id_runway_B int) (Solution,bool) {
+	mut u := copy_solution(p)
 	if u.is_ids_of_planes_valid(id_plane_A,id_plane_B,id_runway_A,id_runway_B) && u.is_ids_of_runways_valid(id_runway_A,id_plane_B) {
 		plane := u.runways[id_runway_A].planes[id_plane_A]
 		u.runways[id_runway_A].planes[id_plane_A] = u.runways[id_runway_B].planes[id_plane_B]
 		u.runways[id_runway_B].planes[id_plane_B] = plane
 		u.recalculate_plane_times()
-		u.validate_solution()
+		is_valid := u.validate_solution()
 		u.value_of_solution()
+		return u,is_valid
 	}
+	u.value_of_solution()
+	return u, true
 }
 
-pub fn (mut u Solution) permute_airplanes(id_plane_A int, id_plane_B int, id_runway int) {
-	u.swap_planes_between_runways(id_plane_A, id_runway, id_plane_B, id_runway)
+pub fn (mut u Solution) permute_airplanes(id_plane_A int, id_plane_B int, id_runway int) (Solution,bool) {
+	return u.swap_planes_between_runways(id_plane_A, id_runway, id_plane_B, id_runway)
 }
 
-pub fn (mut u Solution) random_reinsertion_in_runway(id_plane int, id_runway int) {
+pub fn (mut p Solution) random_reinsertion_in_runway(id_plane int, id_runway int) (Solution,bool) {
+	mut u := copy_solution(p)
 	if u.is_id_of_plane_valid(id_plane, id_runway) {
 		plane := u.runways[id_runway].planes[id_plane]
 		u.runways[id_runway].planes.delete(id_plane)
-		index := rand.u32() % u.runways[id_runway].planes.len
+		index := calculate_random_index(rand.u32(),u.runways[id_runway].planes.len)
 		u.runways[id_runway].planes.insert(index,plane)
 		u.recalculate_plane_times()
-		u.validate_solution()
+		is_valid := u.validate_solution()
 		u.value_of_solution()
+		return u,is_valid
 	}
+	u.value_of_solution()
+	return u, true
 }
 
-pub fn (mut u Solution) random_runway_swap(id_plane int, id_runway int) {
-	if u.is_id_of_plane_valid(id_plane,id_runway) {
-		plane := u.runways[id_runway].planes[id_plane]
-		u.runways[id_runway].planes.delete(id_plane)
-		index_runway := rand.u32() % u.runways.len
-		index_plane := rand.u32() % u.runways[index_runway].planes.len
-		u.runways[index_runway].planes.insert(index_plane,plane)
+
+pub fn (mut p Solution) partial_inversion(id_runway int, left int, right int) (Solution,bool) {
+	mut u := copy_solution(p)
+	if u.is_interval_valid(id_runway,left,right) {
+		mut plane_interval := u.runways[id_runway].planes[left..right]
+		u.runways[id_runway].planes.delete_many(left, right - left)
+		plane_interval = plane_interval.reverse()
+		u.runways[id_runway].planes.insert(left, plane_interval)
 		u.recalculate_plane_times()
-		u.validate_solution()
+		is_valid := u.validate_solution()
 		u.value_of_solution()
+	
+		return u,is_valid
 	}
+	u.value_of_solution()
+	return u, true
 }

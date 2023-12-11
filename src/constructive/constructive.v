@@ -155,7 +155,7 @@ pub fn constructive(problem Problem, number_of_runways int) Solution {
 
 
 	solution.runways = runways
-	print("\n=================================\n Pistas \n=================================\n")
+	//print("\n=================================\n Pistas \n=================================\n")
 	for i in solution.runways {
 		for j in i.planes {
 			print(j.id.str() + " - ")
